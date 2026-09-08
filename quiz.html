@@ -4,125 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz - Online Quiz System</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/quiz.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .quiz-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+        }
+        .timer.warning {
+            color: #ff9800;
+        }
+        .timer.critical {
+            color: #f44336;
+        }
+        .question-section {
+            margin: 30px 0;
+        }
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .option-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+        .option-card:hover {
+            border-color: #2196F3;
+            background: #e3f2fd;
+        }
+        .option-card.selected {
+            border-color: #2196F3;
+            background: #e3f2fd;
+        }
+        .option-card input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .option-text {
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .quiz-navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+        .btn-secondary {
+            background: #757575;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #616161;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .progress-section {
+            margin-bottom: 20px;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #2196F3;
+            transition: width 0.3s ease;
+        }
+        .result-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        .result-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Quiz Page -->
     <div class="quiz-container" id="quizContainer">
-        <!-- Header -->
         <header class="quiz-header">
-            <div class="quiz-header-content">
-                <h1 class="quiz-title">Online Quiz System</h1>
-                <div class="header-actions">
-                    <div class="timer" id="timer">
-                        <span class="timer-label">Time Remaining:</span>
-                        <span class="timer-display" id="timerDisplay">10:00</span>
-                    </div>
-                    <button class="btn btn-secondary" id="backBtn">← Back</button>
-                </div>
+            <h1>Online Quiz System</h1>
+            <div class="timer" id="timer">
+                <span>Time Remaining:</span>
+                <span id="timerDisplay">10:00</span>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="quiz-main">
-            <!-- Progress Bar -->
+        <main>
+            <!-- Progress Section -->
             <div class="progress-section">
                 <div class="progress-bar-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-                    </div>
-                    <span class="progress-percentage" id="progressPercentage">0%</span>
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
                 </div>
-                <p class="question-number" id="questionNumber">Question 1 of 10</p>
+                <p id="questionNumber">Question 1 of 10</p>
             </div>
 
-            <!-- Question Indicator (Dots) -->
-            <div class="question-indicator" id="questionIndicator"></div>
-
-            <!-- Question Content -->
+            <!-- Question Section -->
             <div class="question-section">
                 <h2 class="question-text" id="questionText">Loading question...</h2>
-
-                <!-- Options -->
-                <div class="options-container" id="optionsContainer">
-                    <!-- Options will be dynamically inserted here -->
-                </div>
+                <div class="options-container" id="optionsContainer"></div>
             </div>
 
             <!-- Navigation Buttons -->
             <div class="quiz-navigation">
                 <button class="btn btn-secondary" id="prevBtn">← Previous</button>
                 <button class="btn btn-primary" id="nextBtn">Next →</button>
-                <button class="btn btn-success" id="submitBtn" style="display: none;">Submit Quiz</button>
+                <button class="btn btn-primary" id="submitBtn" style="display: none;">Submit Quiz</button>
+                <button class="btn btn-secondary" id="backBtn">Back to Home</button>
             </div>
         </main>
     </div>
 
     <!-- Result Page -->
     <div class="result-container" id="resultContainer" style="display: none;">
-        <!-- Header -->
-        <header class="result-header">
-            <h1 class="result-title">Quiz Completed!</h1>
-            <p class="result-subtitle">Grade: A - Excellent</p>
-        </header>
-
-        <!-- Main Content -->
-        <main class="result-main">
-            <!-- Congratulations -->
-            <div class="congratulations">
-                <h2 class="congrats-title">Congratulations! 🎉</h2>
-            </div>
-
-            <!-- Score Card -->
-            <div class="score-card">
-                <div class="score-display">
-                    <span class="score-number" id="scoreNumber">0</span>
-                    <span class="score-label" id="scoreLabel">out of 10</span>
-                </div>
-                <div class="percentage-display" id="percentageDisplay">0%</div>
-            </div>
-
-            <!-- Statistics Section -->
-            <div class="stats-section">
-                <div class="result-stats">
-                    <div class="stat-item correct">
-                        <div class="stat-item-label">Correct</div>
-                        <div class="stat-item-value correct" id="correctCount">0</div>
-                    </div>
-                    <div class="stat-item incorrect">
-                        <div class="stat-item-label">Incorrect</div>
-                        <div class="stat-item-value incorrect" id="incorrectCount">0</div>
-                    </div>
-                    <div class="stat-item unanswered">
-                        <div class="stat-item-label">Unanswered</div>
-                        <div class="stat-item-value unanswered" id="unansweredCount">0</div>
-                    </div>
-                    <div class="stat-item time">
-                        <div class="stat-item-label">Time Taken</div>
-                        <div class="stat-item-value time" id="timeTakenDisplay">0:00</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Answer Review Toggle -->
-            <div class="review-toggle">
-                <button class="btn btn-primary" id="toggleReviewBtn">View Answer Review</button>
-            </div>
-
-            <!-- Answer Review Section -->
-            <div class="answer-review" id="answerReview">
-                <h3 class="review-title">Answer Review</h3>
-                <div class="review-list" id="reviewList">
-                    <!-- Review items will be dynamically inserted here -->
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="result-buttons">
-                <button class="btn btn-primary" id="retakeBtn">Retake Quiz</button>
-                <button class="btn btn-secondary" id="homeBtn">Back to Home</button>
-            </div>
-        </main>
+        <h1>Quiz Completed!</h1>
+        <div class="score-display">
+            <span id="scoreNumber">0</span>/<span id="scoreTotal">10</span>
+        </div>
+        <div style="font-size: 24px; margin: 20px 0;">
+            <span id="percentageDisplay">0%</span>
+        </div>
+        <div style="margin: 20px 0;">
+            <p><strong>Correct:</strong> <span id="correctCount">0</span></p>
+            <p><strong>Incorrect:</strong> <span id="incorrectCount">0</span></p>
+            <p><strong>Unanswered:</strong> <span id="unansweredCount">0</span></p>
+            <p><strong>Time Taken:</strong> <span id="timeTakenDisplay">0:00</span></p>
+        </div>
+        <div class="result-buttons">
+            <button class="btn btn-primary" id="retakeBtn">Retake Quiz</button>
+            <button class="btn btn-secondary" id="homeBtn">Back to Home</button>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -130,5 +203,8 @@
     <script src="js/quiz.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
+    <script>
+        console.log('Quiz page scripts loaded');
+    </script>
 </body>
 </html>
