@@ -23,6 +23,7 @@ class QuizUIController {
             // Result Page Elements
             resultContainer: document.getElementById('resultContainer'),
             scoreNumber: document.getElementById('scoreNumber'),
+            scoreTotal: document.getElementById('scoreTotal'),
             scoreLabel: document.getElementById('scoreLabel'),
             percentageDisplay: document.getElementById('percentageDisplay'),
             correctCount: document.getElementById('correctCount'),
@@ -45,61 +46,71 @@ class QuizUIController {
         const questionIndex = quizManager.currentQuestion;
 
         // Update question number
-        this.elements.questionNumber.textContent = 
-            `Question ${questionIndex + 1} of ${quizManager.questions.length}`;
+        if (this.elements.questionNumber) {
+            this.elements.questionNumber.textContent = 
+                `Question ${questionIndex + 1} of ${quizManager.questions.length}`;
+        }
 
         // Update progress bar
         const progress = ((questionIndex + 1) / quizManager.questions.length) * 100;
-        this.elements.progressBar.style.width = progress + '%';
-        this.elements.progressPercentage.textContent = Math.round(progress) + '%';
+        if (this.elements.progressBar) {
+            this.elements.progressBar.style.width = progress + '%';
+        }
+        if (this.elements.progressPercentage) {
+            this.elements.progressPercentage.textContent = Math.round(progress) + '%';
+        }
 
         // Display question text
-        this.elements.questionText.textContent = question.question;
+        if (this.elements.questionText) {
+            this.elements.questionText.textContent = question.question;
+        }
 
         // Get shuffled options
         const shuffledOptions = shuffleQuestionOptions(question);
 
         // Clear previous options
-        this.elements.optionsContainer.innerHTML = '';
+        if (this.elements.optionsContainer) {
+            this.elements.optionsContainer.innerHTML = '';
 
-        // Display options
-        shuffledOptions.forEach((option, index) => {
-            const optionCard = document.createElement('label');
-            optionCard.className = 'option-card';
+            // Display options
+            shuffledOptions.forEach((option, index) => {
+                const optionCard = document.createElement('label');
+                optionCard.className = 'option-card';
 
-            const radio = document.createElement('input');
-            radio.type = 'radio';
-            radio.name = 'answer';
-            radio.value = option.originalIndex;
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'answer';
+                radio.value = option.originalIndex;
 
-            // Check if this option was previously selected
-            if (quizManager.getAnswer(questionIndex) === option.originalIndex) {
-                radio.checked = true;
-                optionCard.classList.add('selected');
-            }
+                // Check if this option was previously selected
+                if (quizManager.getAnswer(questionIndex) === option.originalIndex) {
+                    radio.checked = true;
+                    optionCard.classList.add('selected');
+                }
 
-            const optionText = document.createElement('span');
-            optionText.className = 'option-text';
-            optionText.textContent = option.text;
+                const optionText = document.createElement('span');
+                optionText.className = 'option-text';
+                optionText.textContent = option.text;
 
-            radio.addEventListener('change', (e) => {
-                // Remove selected class from all options
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.classList.remove('selected');
+                radio.addEventListener('change', (e) => {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.option-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+
+                    // Add selected class to current option
+                    e.target.closest('.option-card').classList.add('selected');
+
+                    // Save answer
+                    quizManager.setAnswer(parseInt(e.target.value));
+                    quizManager.saveProgress();
                 });
 
-                // Add selected class to current option
-                e.target.closest('.option-card').classList.add('selected');
-
-                // Save answer
-                quizManager.setAnswer(parseInt(e.target.value));
-                quizManager.saveProgress();
+                optionCard.appendChild(radio);
+                optionCard.appendChild(optionText);
+                this.elements.optionsContainer.appendChild(optionCard);
             });
-
-            optionCard.appendChild(radio);
-            optionCard.appendChild(optionText);
-            this.elements.optionsContainer.appendChild(optionCard);
-        });
+        }
 
         // Update button states
         this.updateNavigationButtons();
@@ -115,16 +126,20 @@ class QuizUIController {
         const isLastQuestion = questionIndex === quizManager.questions.length - 1;
 
         // Previous button
-        this.elements.prevBtn.disabled = isFirstQuestion;
-        this.elements.prevBtn.style.opacity = isFirstQuestion ? '0.5' : '1';
+        if (this.elements.prevBtn) {
+            this.elements.prevBtn.disabled = isFirstQuestion;
+            this.elements.prevBtn.style.opacity = isFirstQuestion ? '0.5' : '1';
+        }
 
         // Next button
-        if (isLastQuestion) {
-            this.elements.nextBtn.style.display = 'none';
-            this.elements.submitBtn.style.display = 'block';
-        } else {
-            this.elements.nextBtn.style.display = 'block';
-            this.elements.submitBtn.style.display = 'none';
+        if (this.elements.nextBtn && this.elements.submitBtn) {
+            if (isLastQuestion) {
+                this.elements.nextBtn.style.display = 'none';
+                this.elements.submitBtn.style.display = 'inline-block';
+            } else {
+                this.elements.nextBtn.style.display = 'inline-block';
+                this.elements.submitBtn.style.display = 'none';
+            }
         }
     }
 
@@ -132,7 +147,7 @@ class QuizUIController {
      * Update question indicator dots
      */
     updateQuestionIndicator() {
-        if (!quizConfig.showQuestionIndicator) return;
+        if (!this.elements.questionIndicator) return;
 
         const dots = this.elements.questionIndicator.querySelectorAll('.question-dot');
         dots.forEach((dot, index) => {
@@ -152,7 +167,7 @@ class QuizUIController {
      * Create question indicator dots
      */
     createQuestionIndicator() {
-        if (!quizConfig.showQuestionIndicator) return;
+        if (!this.elements.questionIndicator) return;
 
         this.elements.questionIndicator.innerHTML = '';
         this.elements.questionIndicator.classList.add('show');
@@ -178,17 +193,21 @@ class QuizUIController {
      * Update timer display
      */
     updateTimer(seconds) {
-        this.elements.timerDisplay.textContent = formatTime(seconds);
+        if (this.elements.timerDisplay) {
+            this.elements.timerDisplay.textContent = formatTime(seconds);
+        }
 
         // Add warning styles
-        if (seconds <= 60) {
-            this.elements.timer.classList.add('critical');
-            this.elements.timer.classList.remove('warning');
-        } else if (seconds <= 300) {
-            this.elements.timer.classList.add('warning');
-            this.elements.timer.classList.remove('critical');
-        } else {
-            this.elements.timer.classList.remove('warning', 'critical');
+        if (this.elements.timer) {
+            if (seconds <= 60) {
+                this.elements.timer.classList.add('critical');
+                this.elements.timer.classList.remove('warning');
+            } else if (seconds <= 300) {
+                this.elements.timer.classList.add('warning');
+                this.elements.timer.classList.remove('critical');
+            } else {
+                this.elements.timer.classList.remove('warning', 'critical');
+            }
         }
     }
 
@@ -197,33 +216,36 @@ class QuizUIController {
      */
     displayResults(results) {
         // Hide quiz container, show result container
-        this.elements.quizContainer.style.display = 'none';
-        this.elements.resultContainer.style.display = 'flex';
-
-        // Display score
-        this.elements.scoreNumber.textContent = results.correct;
-        this.elements.scoreLabel.textContent = `out of ${results.total}`;
-        this.elements.percentageDisplay.textContent = results.percentage + '%';
-
-        // Display statistics
-        this.elements.correctCount.textContent = results.correct;
-        this.elements.incorrectCount.textContent = results.incorrect;
-        this.elements.unansweredCount.textContent = results.unanswered;
-        this.elements.timeTakenDisplay.textContent = formatTime(results.timeTaken);
-
-        // Display grade
-        const gradeElement = document.querySelector('.result-subtitle');
-        if (gradeElement) {
-            gradeElement.textContent = `Grade: ${results.grade.grade} - ${results.grade.label}`;
-            gradeElement.style.color = results.grade.color;
+        if (this.elements.quizContainer) {
+            this.elements.quizContainer.style.display = 'none';
+        }
+        if (this.elements.resultContainer) {
+            this.elements.resultContainer.style.display = 'block';
         }
 
-        // Display review
-        if (quizConfig.allowReview) {
-            this.displayAnswerReview(quizManager.getDetailedReview());
-        } else {
-            this.elements.answerReview.style.display = 'none';
-            this.elements.toggleReviewBtn.style.display = 'none';
+        // Display score
+        if (this.elements.scoreNumber) {
+            this.elements.scoreNumber.textContent = results.correct;
+        }
+        if (this.elements.scoreTotal) {
+            this.elements.scoreTotal.textContent = results.total;
+        }
+        if (this.elements.percentageDisplay) {
+            this.elements.percentageDisplay.textContent = results.percentage + '%';
+        }
+
+        // Display statistics
+        if (this.elements.correctCount) {
+            this.elements.correctCount.textContent = results.correct;
+        }
+        if (this.elements.incorrectCount) {
+            this.elements.incorrectCount.textContent = results.incorrect;
+        }
+        if (this.elements.unansweredCount) {
+            this.elements.unansweredCount.textContent = results.unanswered;
+        }
+        if (this.elements.timeTakenDisplay) {
+            this.elements.timeTakenDisplay.textContent = formatTime(results.timeTaken);
         }
     }
 
@@ -231,6 +253,8 @@ class QuizUIController {
      * Display detailed answer review
      */
     displayAnswerReview(review) {
+        if (!this.elements.reviewList) return;
+
         this.elements.reviewList.innerHTML = '';
 
         review.forEach(item => {
@@ -265,66 +289,22 @@ class QuizUIController {
     }
 
     /**
-     * Show confirmation modal
-     */
-    showConfirmModal(title, message, onConfirm, onCancel) {
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-warning">
-                    <h2>${title}</h2>
-                    <p>${message}</p>
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button class="btn btn-danger" id="confirmBtn">Confirm</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        const confirmBtn = modal.querySelector('#confirmBtn');
-        const cancelBtn = modal.querySelector('#cancelBtn');
-
-        confirmBtn.addEventListener('click', () => {
-            modal.remove();
-            if (typeof onConfirm === 'function') onConfirm();
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            modal.remove();
-            if (typeof onCancel === 'function') onCancel();
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.remove();
-                if (typeof onCancel === 'function') onCancel();
-            }
-        });
-    }
-
-    /**
      * Show alert
      */
     showAlert(message, type = 'info') {
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type}`;
-        alert.textContent = message;
-        document.body.appendChild(alert);
-
-        setTimeout(() => alert.remove(), 3000);
+        alert(message);
     }
 
     /**
      * Reset UI for new quiz
      */
     resetUI() {
-        this.elements.resultContainer.style.display = 'none';
-        this.elements.quizContainer.style.display = 'flex';
-        this.elements.answerReview.classList.remove('active');
+        if (this.elements.resultContainer) {
+            this.elements.resultContainer.style.display = 'none';
+        }
+        if (this.elements.quizContainer) {
+            this.elements.quizContainer.style.display = 'flex';
+        }
     }
 }
 
@@ -332,3 +312,5 @@ class QuizUIController {
  * Create global UI controller instance
  */
 const uiController = new QuizUIController();
+
+console.log('UI Controller loaded');
