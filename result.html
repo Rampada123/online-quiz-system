@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster - Results</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/result.css">
+</head>
+<body>
+    <div class="result-container">
+        <!-- Header -->
+        <header class="result-header">
+            <h1 class="result-title">QuizMaster</h1>
+            <p class="result-subtitle">Quiz Complete</p>
+        </header>
+
+        <!-- Main Result Area -->
+        <main class="result-main">
+            <!-- Score Card -->
+            <section class="score-section">
+                <div class="congratulations">
+                    <h2 class="congrats-title">Congratulations! 🎉</h2>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-display">
+                        <div class="score-number" id="scoreNumber">0</div>
+                        <div class="score-label">/ <span id="totalQuestionsDisplay">10</span></div>
+                    </div>
+                    <div class="percentage-display" id="percentageDisplay">0%</div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-item-label">Correct Answers</div>
+                        <div class="stat-item-value correct" id="correctCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">Incorrect Answers</div>
+                        <div class="stat-item-value incorrect" id="incorrectCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">Unanswered</div>
+                        <div class="stat-item-value unanswered" id="unansweredCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">Time Taken</div>
+                        <div class="stat-item-value time" id="timeTaken">10:00</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Answer Review Toggle -->
+            <section class="review-toggle">
+                <button class="btn btn-primary" id="toggleReviewBtn">
+                    📋 Review Answers
+                </button>
+            </section>
+
+            <!-- Answer Review Section -->
+            <section class="answer-review" id="answerReview" style="display: none;">
+                <h3 class="review-title">Answer Review</h3>
+                <div class="review-list" id="reviewList">
+                    <!-- Review items will be dynamically generated -->
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="action-buttons result-buttons">
+                <button class="btn btn-secondary" id="tryAgainBtn">
+                    🔄 Try Again
+                </button>
+                <button class="btn btn-outline" id="historyBtn">
+                    📊 Quiz History
+                </button>
+                <button class="btn btn-outline" id="homeBtn">
+                    🏠 Back to Home
+                </button>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 QuizMaster. Keep practicing to improve your score!</p>
+        </footer>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/result.js"></script>
+</body>
+</html>
