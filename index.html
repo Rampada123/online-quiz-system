@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster - Test Your Knowledge</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">📚</div>
+                <h1 class="app-title">QuizMaster</h1>
+            </div>
+            <p class="tagline">Test Your Knowledge</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2 class="hero-title">Welcome to QuizMaster</h2>
+                <p class="hero-description">
+                    Challenge yourself with our comprehensive quiz system. Test your knowledge across
+                    HTML, CSS, JavaScript, and web development concepts. Track your progress and improve
+                    your skills with every quiz attempt.
+                </p>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="action-buttons">
+                <button class="btn btn-primary" id="startQuizBtn">
+                    <span class="btn-icon">▶</span>
+                    Start Quiz
+                </button>
+                <button class="btn btn-secondary" id="viewHistoryBtn">
+                    <span class="btn-icon">📊</span>
+                    Quiz History
+                </button>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="statistics">
+                <h3 class="stats-title">Quiz Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Questions</div>
+                        <div class="stat-value" id="totalQuestions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Quiz Duration</div>
+                        <div class="stat-value" id="quizDuration">10 min</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Attempts</div>
+                        <div class="stat-value" id="totalAttempts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Best Score</div>
+                        <div class="stat-value" id="bestScore">0%</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <h3>What You'll Learn</h3>
+                <ul class="info-list">
+                    <li>✓ HTML5 fundamentals and best practices</li>
+                    <li>✓ CSS3 styling and responsive design</li>
+                    <li>✓ JavaScript ES6+ features and concepts</li>
+                    <li>✓ Web development principles</li>
+                    <li>✓ Programming fundamentals</li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 QuizMaster. Built with HTML, CSS, and JavaScript.</p>
+        </footer>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
