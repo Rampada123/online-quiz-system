@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster - Quiz History</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">📚</div>
+                <h1 class="app-title">QuizMaster</h1>
+            </div>
+            <p class="tagline">Quiz History</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Title -->
+            <section class="page-title">
+                <h2>Your Quiz History</h2>
+                <p>Track all your quiz attempts and monitor your progress</p>
+            </section>
+
+            <!-- Controls -->
+            <section class="history-controls">
+                <button class="btn btn-secondary" id="backBtn">
+                    ← Back to Home
+                </button>
+                <button class="btn btn-danger" id="clearHistoryBtn">
+                    🗑 Clear All History
+                </button>
+            </section>
+
+            <!-- History Content -->
+            <section class="history-content">
+                <!-- History table/cards will be generated here -->
+                <div id="historyContainer">
+                    <p class="empty-message">Loading history...</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 QuizMaster. Keep learning and improving!</p>
+        </footer>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="clearConfirmModal">
+        <div class="modal-content">
+            <h2>Clear All History?</h2>
+            <p>This action cannot be undone. All quiz attempts will be permanently deleted.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" id="cancelClearBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmClearBtn">Clear History</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>
