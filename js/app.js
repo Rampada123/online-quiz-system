@@ -1,5 +1,57 @@
 /* ============================================
-   MAIN APPLICATION LOGIC
+   HOME PAGE FUNCTIONALITY
+   ============================================ */
+
+/**
+ * Initialize Home Page
+ */
+function initializeHomePage() {
+    // Display total questions
+    document.getElementById('totalQuestions').textContent = quizConfig.totalQuestions;
+
+    // Display quiz duration
+    const minutes = Math.floor(quizConfig.timeLimit / 60);
+    document.getElementById('quizDuration').textContent = minutes + ' min';
+
+    // Load and display statistics
+    loadStatistics();
+
+    // Setup event listeners for buttons
+    setupHomePageListeners();
+}
+
+/**
+ * Load statistics from localStorage
+ */
+function loadStatistics() {
+    const stats = getQuizStatistics();
+
+    document.getElementById('totalAttempts').textContent = stats.totalAttempts;
+    document.getElementById('bestScore').textContent = stats.bestScore + '%';
+}
+
+/**
+ * Setup event listeners for home page buttons
+ */
+function setupHomePageListeners() {
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+
+    if (startQuizBtn) {
+        startQuizBtn.addEventListener('click', () => {
+            window.location.href = 'quiz.html';
+        });
+    }
+
+    if (viewHistoryBtn) {
+        viewHistoryBtn.addEventListener('click', () => {
+            window.location.href = 'history.html';
+        });
+    }
+}
+
+/* ============================================
+   QUIZ PAGE FUNCTIONALITY
    ============================================ */
 
 /**
@@ -8,13 +60,13 @@
 function initializeQuiz() {
     // Validate quiz data
     if (!validateQuizData()) {
-        uiController.showAlert('Error: Quiz data validation failed!', 'error');
+        alert('Error: Quiz data validation failed!');
         return;
     }
 
     // Initialize quiz manager
     if (!quizManager.initialize()) {
-        uiController.showAlert('Error: Failed to initialize quiz!', 'error');
+        alert('Error: Failed to initialize quiz!');
         return;
     }
 
@@ -30,7 +82,7 @@ function initializeQuiz() {
             uiController.updateTimer(timeRemaining);
         },
         () => {
-            uiController.showAlert('Time is up! Your quiz has been submitted.', 'warning');
+            alert('Time is up! Your quiz has been submitted.');
             submitQuiz();
         }
     );
@@ -38,56 +90,81 @@ function initializeQuiz() {
     // Setup event listeners
     setupEventListeners();
 
-    uiController.showAlert('Quiz started! Good luck!', 'success');
+    console.log('Quiz started successfully');
 }
 
 /**
- * Setup event listeners for buttons
+ * Setup event listeners for quiz buttons
  */
 function setupEventListeners() {
     // Previous button
-    uiController.elements.prevBtn.addEventListener('click', () => {
-        if (quizManager.previousQuestion()) {
-            uiController.displayQuestion();
-        }
-    });
+    const prevBtn = document.getElementById('prevBtn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (quizManager.previousQuestion()) {
+                uiController.displayQuestion();
+            }
+        });
+    }
 
     // Next button
-    uiController.elements.nextBtn.addEventListener('click', () => {
-        if (quizManager.nextQuestion()) {
-            uiController.displayQuestion();
-        }
-    });
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (quizManager.nextQuestion()) {
+                uiController.displayQuestion();
+            }
+        });
+    }
 
     // Submit button
-    uiController.elements.submitBtn.addEventListener('click', () => {
-        showSubmitConfirmation();
-    });
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', () => {
+            showSubmitConfirmation();
+        });
+    }
 
-    // Back button (from result page)
-    if (uiController.elements.backBtn) {
-        uiController.elements.backBtn.addEventListener('click', () => {
-            window.history.back();
+    // Back button (from quiz page)
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            if (quizManager.quizStarted && !quizManager.quizSubmitted) {
+                quizManager.showConfirmModal(
+                    'Leave Quiz',
+                    'Your progress will be saved. Continue?',
+                    () => {
+                        quizManager.saveProgress();
+                        window.location.href = 'index.html';
+                    },
+                    null
+                );
+            } else {
+                window.location.href = 'index.html';
+            }
         });
     }
 
     // Retake button
-    if (uiController.elements.retakeBtn) {
-        uiController.elements.retakeBtn.addEventListener('click', () => {
+    const retakeBtn = document.getElementById('retakeBtn');
+    if (retakeBtn) {
+        retakeBtn.addEventListener('click', () => {
             retakeQuiz();
         });
     }
 
     // Home button
-    if (uiController.elements.homeBtn) {
-        uiController.elements.homeBtn.addEventListener('click', () => {
+    const homeBtn = document.getElementById('homeBtn');
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
             window.location.href = 'index.html';
         });
     }
 
     // Toggle review button
-    if (uiController.elements.toggleReviewBtn) {
-        uiController.elements.toggleReviewBtn.addEventListener('click', () => {
+    const toggleReviewBtn = document.getElementById('toggleReviewBtn');
+    if (toggleReviewBtn) {
+        toggleReviewBtn.addEventListener('click', () => {
             toggleAnswerReview();
         });
     }
@@ -99,20 +176,14 @@ function setupEventListeners() {
 function showSubmitConfirmation() {
     const unansweredCount = quizManager.getUnansweredCount();
 
-    if (unansweredCount > 0) {
-        uiController.showConfirmModal(
-            'Unanswered Questions',
-            `You have ${unansweredCount} unanswered question(s). Are you sure you want to submit?`,
-            submitQuiz,
-            null
-        );
-    } else {
-        uiController.showConfirmModal(
-            'Submit Quiz',
-            'Are you sure you want to submit your quiz? You cannot change your answers after submission.',
-            submitQuiz,
-            null
-        );
+    const confirmDialog = confirm(
+        unansweredCount > 0
+            ? `You have ${unansweredCount} unanswered question(s). Are you sure you want to submit?`
+            : 'Are you sure you want to submit your quiz? You cannot change your answers after submission.'
+    );
+
+    if (confirmDialog) {
+        submitQuiz();
     }
 }
 
@@ -136,28 +207,21 @@ function submitQuiz() {
     quizManager.clearSavedProgress();
 
     // Display results
-    uiController.displayResults(results);
-
-    // Show success message
-    if (results.passed) {
-        uiController.showAlert(
-            `Congratulations! You passed with ${results.percentage}%`,
-            'success'
-        );
-    } else {
-        uiController.showAlert(
-            `You scored ${results.percentage}%. Passing score is ${quizConfig.passingScore}%.`,
-            'warning'
-        );
+    if (typeof uiController !== 'undefined' && uiController.displayResults) {
+        uiController.displayResults(results);
     }
+
+    console.log('Quiz submitted with results:', results);
 }
 
 /**
  * Toggle answer review visibility
  */
 function toggleAnswerReview() {
-    const reviewSection = uiController.elements.answerReview;
-    const button = uiController.elements.toggleReviewBtn;
+    const reviewSection = document.getElementById('answerReview');
+    const button = document.getElementById('toggleReviewBtn');
+
+    if (!reviewSection || !button) return;
 
     if (reviewSection.classList.contains('active')) {
         reviewSection.classList.remove('active');
@@ -172,64 +236,92 @@ function toggleAnswerReview() {
  * Retake the quiz
  */
 function retakeQuiz() {
-    uiController.showConfirmModal(
-        'Retake Quiz',
-        'Starting a new quiz will reset all your answers. Continue?',
-        () => {
-            quizManager.reset();
-            quizManager.clearSavedProgress();
-            uiController.resetUI();
-            initializeQuiz();
-        },
-        null
-    );
+    const confirmDialog = confirm('Starting a new quiz will reset all your answers. Continue?');
+
+    if (confirmDialog) {
+        quizManager.reset();
+        quizManager.clearSavedProgress();
+        
+        // Reset UI
+        const resultContainer = document.getElementById('resultContainer');
+        const quizContainer = document.getElementById('quizContainer');
+        
+        if (resultContainer) resultContainer.style.display = 'none';
+        if (quizContainer) quizContainer.style.display = 'flex';
+        
+        initializeQuiz();
+    }
 }
 
 /**
- * Check for saved progress on page load
+ * Check for saved progress on quiz page load
  */
 function checkSavedProgress() {
     const saved = localStorage.getItem('quizProgress');
 
     if (saved) {
-        uiController.showConfirmModal(
-            'Resume Quiz',
-            'You have a quiz in progress. Would you like to resume it?',
-            () => {
-                quizManager.initialize();
-                quizManager.loadProgress();
-                uiController.createQuestionIndicator();
-                uiController.displayQuestion();
+        const resumeDialog = confirm('You have a quiz in progress. Would you like to resume it?');
 
-                // Restart timer with remaining time
-                quizManager.startTimer(
-                    (timeRemaining) => {
-                        uiController.updateTimer(timeRemaining);
-                    },
-                    () => {
-                        uiController.showAlert('Time is up! Your quiz has been submitted.', 'warning');
-                        submitQuiz();
-                    }
-                );
+        if (resumeDialog) {
+            quizManager.initialize();
+            quizManager.loadProgress();
+            
+            // Recreate question indicator
+            uiController.createQuestionIndicator();
+            uiController.displayQuestion();
 
-                setupEventListeners();
-                uiController.showAlert('Quiz resumed!', 'info');
-            },
-            () => {
-                quizManager.clearSavedProgress();
-                initializeQuiz();
-            }
-        );
+            // Restart timer with remaining time
+            quizManager.startTimer(
+                (timeRemaining) => {
+                    uiController.updateTimer(timeRemaining);
+                },
+                () => {
+                    alert('Time is up! Your quiz has been submitted.');
+                    submitQuiz();
+                }
+            );
+
+            setupEventListeners();
+            console.log('Quiz resumed');
+        } else {
+            quizManager.clearSavedProgress();
+            initializeQuiz();
+        }
     } else {
         initializeQuiz();
     }
 }
+
+/* ============================================
+   PAGE INITIALIZATION
+   ============================================ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded');
+
+    // Determine which page we're on
+    const quizContainer = document.getElementById('quizContainer');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+
+    if (quizContainer) {
+        // This is the quiz page
+        console.log('Quiz page detected');
+        checkSavedProgress();
+    } else if (startQuizBtn) {
+        // This is the home page
+        console.log('Home page detected');
+        initializeHomePage();
+    }
+});
 
 /**
  * Export functions for use in other modules
  */
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        initializeHomePage,
+        loadStatistics,
+        setupHomePageListeners,
         initializeQuiz,
         setupEventListeners,
         showSubmitConfirmation,
@@ -239,19 +331,3 @@ if (typeof module !== 'undefined' && module.exports) {
         checkSavedProgress
     };
 }
-
-/* ============================================
-   PAGE LOAD EVENT
-   ============================================ */
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Quiz application loaded');
-    
-    // Check if quiz page or result page
-    const quizContainer = document.getElementById('quizContainer');
-    
-    if (quizContainer) {
-        // This is the quiz page
-        checkSavedProgress();
-    }
-});
