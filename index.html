@@ -5,6 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizMaster - Test Your Knowledge</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 48px;
+        }
+
+        .app-title {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .hero-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 20px;
+        }
+
+        .statistics {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .stats-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .info-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info-section h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            font-size: 16px;
+            color: #666;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .app-title {
+                font-size: 28px;
+            }
+
+            .hero-title {
+                font-size: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -24,18 +242,17 @@
                 <h2 class="hero-title">Welcome to QuizMaster</h2>
                 <p class="hero-description">
                     Challenge yourself with our comprehensive quiz system. Test your knowledge across
-                    HTML, CSS, JavaScript, and web development concepts. Track your progress and improve
-                    your skills with every quiz attempt.
+                    various subjects and topics. Track your progress and improve your skills with every quiz attempt.
                 </p>
             </section>
 
             <!-- Action Buttons -->
             <section class="action-buttons">
-                <button class="btn btn-primary" id="startQuizBtn">
+                <button class="btn btn-primary" id="startQuizBtn" onclick="window.location.href='quiz.html'">
                     <span class="btn-icon">▶</span>
                     Start Quiz
                 </button>
-                <button class="btn btn-secondary" id="viewHistoryBtn">
+                <button class="btn btn-secondary" id="viewHistoryBtn" onclick="window.location.href='history.html'">
                     <span class="btn-icon">📊</span>
                     Quiz History
                 </button>
@@ -47,7 +264,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Total Questions</div>
-                        <div class="stat-value" id="totalQuestions">0</div>
+                        <div class="stat-value" id="totalQuestions">10</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Quiz Duration</div>
@@ -68,11 +285,11 @@
             <section class="info-section">
                 <h3>What You'll Learn</h3>
                 <ul class="info-list">
-                    <li>✓ HTML5 fundamentals and best practices</li>
-                    <li>✓ CSS3 styling and responsive design</li>
-                    <li>✓ JavaScript ES6+ features and concepts</li>
-                    <li>✓ Web development principles</li>
-                    <li>✓ Programming fundamentals</li>
+                    <li>✓ General Knowledge and Facts</li>
+                    <li>✓ Geography and World Capitals</li>
+                    <li>✓ Science and Natural World</li>
+                    <li>✓ History and Historical Events</li>
+                    <li>✓ Literature and Famous Works</li>
                 </ul>
             </section>
         </main>
@@ -84,6 +301,32 @@
     </div>
 
     <script src="js/questions.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        console.log('Index page loaded');
+        
+        // Update statistics when page loads
+        if (document.getElementById('totalQuestions')) {
+            document.getElementById('totalQuestions').textContent = quizConfig.totalQuestions;
+        }
+
+        const minutes = Math.floor(quizConfig.timeLimit / 60);
+        if (document.getElementById('quizDuration')) {
+            document.getElementById('quizDuration').textContent = minutes + ' min';
+        }
+
+        // Load quiz history statistics
+        const history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+        if (document.getElementById('totalAttempts')) {
+            document.getElementById('totalAttempts').textContent = history.length;
+        }
+
+        if (history.length > 0) {
+            const scores = history.map(h => h.results.percentage);
+            const bestScore = Math.max(...scores);
+            if (document.getElementById('bestScore')) {
+                document.getElementById('bestScore').textContent = bestScore + '%';
+            }
+        }
+    </script>
 </body>
 </html>
